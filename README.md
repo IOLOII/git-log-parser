@@ -57,6 +57,13 @@ Commit objects contain the most frequently used commit information. However, the
 Get all commits from earlier than an hour ago and stream them to `stdout` as pretty-printed JSON
 
 ```ts
+let { parse, fields } = require('git-log-parser')
+fields = {
+  commit: {
+    long: 'H',
+    short: 'h'
+  },
+}
 parse(
   {
     // after: new Date(['2024-08-4', '2024-08-5'][0]),
@@ -65,7 +72,7 @@ parse(
   {
     cwd: './'
   },
-  config // https://opensource.apple.com/source/Git/Git-19/src/git-htmldocs/pretty-formats.txt
+  fields // https://opensource.apple.com/source/Git/Git-19/src/git-htmldocs/pretty-formats.txt
 )
   .on('data', function (data: any) {
     console.log(data)
