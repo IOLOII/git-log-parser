@@ -1,10 +1,10 @@
-const { spawn } = require('child_process')
-const through = require('through2')
-const split = require('split2')
-const traverse = require('traverse')
+import { spawn } from 'child_process'
+import through from 'through2'
+import split from 'split2'
+import traverse from 'traverse'
 const toArgv = require('argv-formatter').format
-const combine = require('stream-combiner2')
-const fwd = require('spawn-error-forwarder')
+import combine from 'stream-combiner2'
+import fwd from 'spawn-error-forwarder'
 
 var END = '==END=='
 var FIELD = '==FIELD=='
@@ -57,8 +57,8 @@ function parseLogStream(config: any, options: object = {}, fields: any) {
   ])
 };
 
-function mapFields(_fields = fields) {
-  return traverse.reduce(_fields, function (this: any, fields: Array<any>, node: object) {
+function mapFields(fields = _fields) {
+  return traverse.reduce(fields, function (this: any, fields: Array<any>, node: object) {
     if (this.isLeaf && typeof node === 'string') {
       var typed = this.key === 'key'
       fields.push({
@@ -71,7 +71,7 @@ function mapFields(_fields = fields) {
   }, [])
 };
 
-let fields = {
+let _fields = {
   commit: {
     long: 'H',
     short: 'h'
@@ -99,14 +99,21 @@ let fields = {
   subject: 's',
   body: 'b'
 }
-
-module.exports = {
-  parse: parseLogStream,
-  fields: new Proxy(fields, {
-    get: () => fields,
-    set: function (value) {
-      fields = value
-      return true
-    }
-  })
-}
+export const parse = parseLogStream
+export let fields = new Proxy(_fields, {
+  get: () => fields,
+  set: function (value) {
+    fields = value
+    return true
+  }
+})
+// module.exports = {
+//   parse: parseLogStream,
+//   fields: new Proxy(fields, {
+//     get: () => fields,
+//     set: function (value) {
+//       fields = value
+//       return true
+//     }
+//   })
+// }

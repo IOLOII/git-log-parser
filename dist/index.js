@@ -1,12 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-// src/index.ts
-function hello(name) {
-    return `Hello, ${name}!`;
-}
-function goodbye(name) {
-    return `Goodbye, ${name}!`;
-}
 const { spawn } = require('child_process');
 const through = require('through2');
 const split = require('split2');
@@ -32,7 +24,7 @@ function trim() {
         }
     });
 }
-function args(config, fieldMap = {}) {
+function args(config, fieldMap) {
     config.format = format(fieldMap);
     return toArgv(config);
 }
@@ -42,8 +34,8 @@ function log(args, options = {}) {
     })
         .stdout;
 }
-function parseLogStream(config, options = {}) {
-    var map = mapf();
+function parseLogStream(config, options = {}, fields) {
+    var map = mapFields(fields);
     return combine.obj([
         log(args(config, map), options),
         split(END + '\n'),
@@ -59,8 +51,8 @@ function parseLogStream(config, options = {}) {
     ]);
 }
 ;
-function mapf() {
-    return traverse.reduce(config, function (fields, node) {
+function mapFields(_fields = fields) {
+    return traverse.reduce(_fields, function (fields, node) {
         if (this.isLeaf && typeof node === 'string') {
             var typed = this.key === 'key';
             fields.push({
@@ -73,7 +65,7 @@ function mapf() {
     }, []);
 }
 ;
-let config = {
+let fields = {
     commit: {
         long: 'H',
         short: 'h'
@@ -102,8 +94,12 @@ let config = {
     body: 'b'
 };
 module.exports = {
-    hello,
-    goodbye,
     parse: parseLogStream,
-    config
+    fields: new Proxy(fields, {
+        get: () => fields,
+        set: function (value) {
+            fields = value;
+            return true;
+        }
+    })
 };
