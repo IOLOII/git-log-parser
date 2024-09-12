@@ -13,7 +13,7 @@ $ npm install git-log-parser
 
 #### `log.parse(config, options)` -> `Stream(commits)`
 
-Accepts a `config` object mapping to the [options accepted by `git log`](http://git-scm.com/docs/git-log). `config` will be automatically converted to command line options and flags by [argv-formatter](https://github.com/bendrucker/argv-formatter). Returns a stream of commit objects. 
+Accepts a `config` object mapping to the [options accepted by `git log`](http://git-scm.com/docs/git-log). `config` will be automatically converted to command line options and flags by [argv-formatter](https://github.com/bendrucker/argv-formatter). Returns a stream of commit objects.
 
 `options` is passed directly to [`child_process.spawn`](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options).
 
@@ -56,17 +56,26 @@ Commit objects contain the most frequently used commit information. However, the
 
 Get all commits from earlier than an hour ago and stream them to `stdout` as pretty-printed JSON
 
-```js
-var log      = require('git-log-parser');
-var through2 = require('through2');
-
-log.parse({
-  before: new Date(Date.now() - 60 * 60 * 1000)
-})
-.pipe(through2.obj(function (chunk, enc, callback) {
-  callback(null, JSON.stringify(chunk, undefined, 2));
-}))
-.pipe(process.stdout);
+```ts
+parse(
+  {
+    // after: new Date(['2024-08-4', '2024-08-5'][0]),
+    // before: new Date(['2024-08-4', '2024-08-5'][1])
+  },
+  {
+    cwd: './'
+  },
+  config // https://opensource.apple.com/source/Git/Git-19/src/git-htmldocs/pretty-formats.txt
+)
+  .on('data', function (data: any) {
+    console.log(data)
+  })
+  .on('error', (e: any) => {
+    reject()
+  })
+  .on('end', () => {
+    resolve()
+  })
 ```
 
 Note that `before` is stringified and passed directly as an argument to `git log`. No special handling is required for any standard `git log` option. You can filter by committer, time, or any other field supported by [`git log`](http://git-scm.com/docs/git-log).
