@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 import through from 'through2';
 import split from 'split2';
 import traverse from 'traverse';
-var toArgv = require('argv-formatter').format;
+import argvFormatter from 'argv-formatter';
 import combine from 'stream-combiner2';
 import fwd from 'spawn-error-forwarder';
 var END = '==END==';
@@ -25,7 +25,7 @@ function trim() {
 }
 function args(config, fieldMap) {
     config.format = format(fieldMap);
-    return toArgv(config);
+    return argvFormatter.format(config);
 }
 function log(args, options) {
     if (options === void 0) { options = {}; }
@@ -45,7 +45,7 @@ function parseLogStream(config, options, fields) {
             var fields = chunk.toString('utf8').split(FIELD);
             callback(null, map.reduce(function (parsed, field, index) {
                 var value = fields[index];
-                traverse(parsed).set(field.path, field.type ? new field.type(value) : value);
+                traverse(parsed).set(field.path, field.type ? new field.type(value).toString() : value);
                 return parsed;
             }, {}));
         })
@@ -113,4 +113,8 @@ export var fields = new Proxy(_fields, {
 //     }
 //   })
 // }
+export default {
+    parse: parseLogStream,
+    fields: fields
+};
 //# sourceMappingURL=index.js.map

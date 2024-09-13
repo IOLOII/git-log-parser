@@ -2,7 +2,7 @@ import { spawn } from 'child_process'
 import through from 'through2'
 import split from 'split2'
 import traverse from 'traverse'
-const toArgv = require('argv-formatter').format
+import argvFormatter from 'argv-formatter'
 import combine from 'stream-combiner2'
 import fwd from 'spawn-error-forwarder'
 
@@ -29,7 +29,7 @@ function trim() {
 
 function args(config: any, fieldMap: Array<any>) {
   config.format = format(fieldMap)
-  return toArgv(config)
+  return argvFormatter.format(config)
 }
 
 function log(args: Array<string>, options: object = {}) {
@@ -50,7 +50,7 @@ function parseLogStream(config: any, options: object = {}, fields?: any) {
       var fields = chunk.toString('utf8').split(FIELD)
       callback(null, map.reduce(function (parsed: any, field: any, index: any) {
         var value = fields[index]
-        traverse(parsed).set(field.path, field.type ? new field.type(value) : value)
+        traverse(parsed).set(field.path, field.type ? new field.type(value).toString() : value)
         return parsed
       }, {}))
     })
@@ -117,3 +117,8 @@ export let fields = new Proxy(_fields, {
 //     }
 //   })
 // }
+
+export default {
+  parse: parseLogStream,
+  fields
+}

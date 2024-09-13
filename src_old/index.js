@@ -53,7 +53,7 @@ exports.parse = function parseLogStream (config, options) {
       var fields = chunk.toString('utf8').split(FIELD);
       callback(null, map.reduce(function (parsed, field, index) {
         var value = fields[index];
-        traverse(parsed).set(field.path, field.type ? new field.type(value) : value);
+        traverse(parsed).set(field.path, field.type ? new field.type(value).toString() : value);
         return parsed;
       }, {}));
     })

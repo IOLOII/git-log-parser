@@ -18,3 +18,7 @@ declare module 'spawn-error-forwarder' {
   const spawn: any
   export default spawn
 }
+declare module 'argv-formatter' {
+  const argv: any
+  export default argv
+}

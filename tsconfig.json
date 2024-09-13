@@ -9,7 +9,8 @@
     "moduleResolution": "node",
     "target": "es5",
     "allowJs": true,
-  },
+    "declaration": true
+},
   "include": [
     "src/**/*",
     "src/types/**/*"
