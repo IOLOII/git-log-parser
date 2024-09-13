@@ -1,14 +1,14 @@
-import { parse, fields } from '../src/index'
+import { parse } from '../src/index'
 
 import { describe, expect, test } from '@jest/globals'
 describe('parse', () => {
   test('should parse git log', async () => {
-    // fields = {
-    //   commit: {
-    //     long: 'H',
-    //     short: 'h'
-    //   },
-    // }
+    let fields = {
+      commit: {
+        long: 'H',
+        short: 'h'
+      },
+    }
     await new Promise<void>((resolve, reject) => {
       parse({
         // after: new Date(['2024-08-4', '2024-08-5'][0]),

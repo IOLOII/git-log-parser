@@ -17,7 +17,7 @@ function format(fieldMap: Array<any>): string {
 }
 
 function trim() {
-  return through(function (chunk: Buffer, enc: string, callback: Function) {
+  return through(function (chunk: any, enc: string, callback: Function) {
     if (!chunk) {
       callback()
     }
@@ -39,7 +39,7 @@ function log(args: Array<string>, options: object = {}) {
     .stdout
 }
 
-function parseLogStream(config: any, options: object = {}, fields: any) {
+function parseLogStream(config: any, options: object = {}, fields?: any) {
   var map = mapFields(fields)
 
   return combine.obj([
